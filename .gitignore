@@ -1,0 +1,15 @@
+CVS/
+
+*.root
+*.pdf
+
+*.so
+*_C.d
+*.pyc
+__init__.py
+
+*.bak
+*~
+
+*.out
+*.log

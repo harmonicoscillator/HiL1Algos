@@ -1,0 +1,31 @@
+120411_010324: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120411_010439: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit 500
+120411_010605: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120411_130152: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120411_130319: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit
+120411_130456: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120411_130535: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120411_153801: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120411_154032: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit 500
+120411_154454: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120411_180934: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120411_181052: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit 1-99
+120411_181353: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit 225-400
+120411_181437: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit 174-199
+120411_181836: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120515_000829: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_001137: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_001206: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_001414: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_001500: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_001644: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_001822: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_081116: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120515_081219: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit
+120515_081330: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120524_152702: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120524_152835: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit
+120524_153124: /osg/app/crab/CRAB_2_8_1/python/crab.py -status
+120601_172036: /osg/app/crab/CRAB_2_8_1/python/crab.py -create
+120601_172125: /osg/app/crab/CRAB_2_8_1/python/crab.py -submit
+120601_172215: /osg/app/crab/CRAB_2_8_1/python/crab.py -status

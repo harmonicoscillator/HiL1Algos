@@ -17,20 +17,21 @@
 using namespace std;
 
 void macro4tower(int total_events = -1)
-{  
+{
   //int total_events = 2000;
-  TFile *infile = TFile::Open("/mnt/hadoop/cms/store/user/luck/L1_fullmerge/forest_partialmerge_1.root");
+  //TFile *infile = TFile::Open("/mnt/hadoop/cms/store/user/luck/L1_fullmerge/forest_partialmerge_1.root");
+  TFile *infile = TFile::Open("minbias_v3.root");
   TriggerPrimitivesTree_towerjet *towers =
     new TriggerPrimitivesTree_towerjet(infile);
-  
+
   TCanvas* plot;
- 
+
   TH1D* h_towers[2];
 
   TLegend* leg;
 
-  //h_towers[0] = (TH1D*)towers->Loop(total_events, 0, algo[0], false)->Clone();
-  h_towers[1] = (TH1D*)towers->Loop(total_events, 0, true, false)->Clone();
+  h_towers[0] = (TH1D*)towers->Loop(total_events, 0, true, false, 0)->Clone();
+  h_towers[1] = (TH1D*)towers->Loop(total_events, 0, true, false, 1)->Clone();
 
   TriggerPrimitivesTree_alex *regions =
     new TriggerPrimitivesTree_alex(infile);
@@ -38,7 +39,7 @@ void macro4tower(int total_events = -1)
 
   h_regions[0] = (TH1D*)regions->Loop(total_events, 0, false, false)->Clone();
   h_regions[1] = (TH1D*)regions->Loop(total_events, 0, true, false)->Clone();
-  
+
   /************** Doga File *************************/
   // TH1D* hmb=new TH1D();
   // TFile *f1 = new TFile("/net/hisrv0001/home/dgulhan/L1Trigger/newEtHist_mb.root");
@@ -53,7 +54,7 @@ void macro4tower(int total_events = -1)
   // {
   //   double j = (double)i*(double)max_en_doga/(double)nbins_doga;
   //   double integral = hmb->Integral(i, nbins_doga);
-  //   h_min[2]->Fill(j, (double)integral/total_integral);      
+  //   h_min[2]->Fill(j, (double)integral/total_integral);
   // }
   /*****************************************************/
 
@@ -84,7 +85,7 @@ void macro4tower(int total_events = -1)
   //   cout << "five_p " << fivep_p << endl;
   // }
   /***********************************************************/
-  
+
   // h_towers[0]->SetTitle("Efficiency");
   // h_towers[0]->SetLineColor(kRed);
   // h_towers[0]->Draw("L");
@@ -93,9 +94,12 @@ void macro4tower(int total_events = -1)
   h_regions[0]->SetXTitle("L1 Threshold (GeV)");
   h_regions[0]->SetYTitle("L1 Accept Fraction");
   h_regions[0]->Draw("L");
-  
-  h_towers[1]->SetLineColor(kRed);
+
+  h_towers[0]->SetLineColor(kRed);
+  h_towers[0]->Draw("L,same");
+  h_towers[1]->SetLineColor(90);
   h_towers[1]->Draw("L,same");
+
 
   // h_regions[0]->SetLineColor(kRed);
 
@@ -115,7 +119,8 @@ void macro4tower(int total_events = -1)
   //leg->AddEntry(h_towers[0],"nosub towers","l");
   leg->AddEntry(h_regions[0],"Current system","l");
   leg->AddEntry(h_regions[1],"Stage-1 system","l");
-  leg->AddEntry(h_towers[1],"Stage-2 system","l");
+  leg->AddEntry(h_towers[0],"Stage-2 system","l");
+  leg->AddEntry(h_towers[1],"width=3 towerjets","l");
 
 
   // leg->AddEntry(h_min[2],"Tower Level Phi-Ring Subtraction","l");
@@ -125,10 +130,9 @@ void macro4tower(int total_events = -1)
 
 
   leg->Draw();
- 
+
   plot->Update();
 
-  plot->SaveAs("efficiency_comparison_l1primitives.C");
-  plot->SaveAs("efficiency_comparison_l1primitives.gif");
-}  
-
+  //plot->SaveAs("efficiency_comparison_l1primitives.pdf");
+  //plot->SaveAs("efficiency_comparison_l1primitives.gif");
+}

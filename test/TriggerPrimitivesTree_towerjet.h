@@ -24,7 +24,7 @@ class TriggerPrimitivesTree_towerjet {
 public :
   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
   Int_t           fCurrent; //!current Tree number in a TChain
-  
+
   // Declaration of leaf types
   Int_t           event;
   Int_t           run;
@@ -95,16 +95,17 @@ public :
   virtual Int_t    GetEntry(Long64_t entry);
   virtual Long64_t LoadTree(Long64_t entry);
   virtual void     Init(TTree *tree);
-  virtual TH1D*    Loop(int total_events = 0, 
+  virtual TH1D*    Loop(int total_events = 0,
 			int threshhold = 0,
 			bool PHI_AVERAGE = false,
-			bool cut_noise_events = false);
+			bool cut_noise_events = false,
+			int etawidth = 0);
   virtual Bool_t   Notify();
   virtual void     Show(Long64_t entry = -1);
-  
-  
+
+
   //! declare the other tree objects
-  HltTree        *fhlt;   
+  HltTree        *fhlt;
   HiTree         *fhiinfo;
   JetTree        *fjet;
   HLTMuTree      *fmu;
@@ -123,9 +124,9 @@ TriggerPrimitivesTree_towerjet::TriggerPrimitivesTree_towerjet(TFile *f)
     f = new TFile("/net/hidsk0001/d00/scratch/dgulhan/mergedforest/minbiasL1/HiForestL1_merged_v2.root");
     //f = new TFile("/net/hidsk0001/d00/scratch/dgulhan/mergedforest/L1jet/HiForestL1-jet_merged_v1.root");
     //f = new TFile("/net/hidsk0001/d00/scratch/dgulhan/mergedforest/central/HiForestL1-centeral_merged_v0.root");
-    
+
     //tree = (TTree*)gDirectory->Get("demo/TriggerPrimitivesTree");
-    
+
   }
   TTree *tree = (TTree*)f->Get("demo/TriggerPrimitivesTree");
   fhlt = new HltTree::HltTree((TTree*)f->Get("hltanalysis/HltTree"));
@@ -133,8 +134,8 @@ TriggerPrimitivesTree_towerjet::TriggerPrimitivesTree_towerjet(TFile *f)
   //fhlt = new HltTree::HltTree();
   //fhiinfo = new HiTree::HiTree();
   //fjet = new JetTree::JetTree();
-  //fmu = new HLTMuTree::HLTMuTree();  
-  
+  //fmu = new HLTMuTree::HLTMuTree();
+
   Init(tree);
 }
 

@@ -9,10 +9,11 @@
 const int NETA_TOWERS = 88;
 #include "FindTowerJet.C"
 
-TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events, 
-				       int threshhold,
-				       bool PHI_AVERAGE,
-				       bool cut_noise_events)
+TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
+					   int threshhold,
+					   bool PHI_AVERAGE,
+					   bool cut_noise_events,
+					   int etawidth)
 {
   const int NBINS = 300;
   const int MAX_EN = 600;
@@ -21,9 +22,9 @@ TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
   const bool CIRCULAR_JETS = true; //otherwise square jets
 
   if (fChain == 0) return(0);
-  
+
   Long64_t nentries = fChain->GetEntriesFast();
-  
+
   TH1D *max_towerjet_energy;
   TH1D *efficiency_curve;
   // TH2I *max_towerjet_location;
@@ -34,26 +35,26 @@ TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
   // 			 NETA_TOWERS,0,NETA_TOWERS,NPHI_TOWERS,0,NPHI_TOWERS);
   // detectormap->SetXTitle("#eta");
   // detectormap->SetYTitle("#phi");
-  
+
   // TH2I *detectormapafter;
   // detectormapafter = new TH2I("detectormapafter",
   // 			 "Detector Map After Subtraction",
   // 			 NETA_TOWERS,0,NETA_TOWERS,NPHI_TOWERS,0,NPHI_TOWERS);
   // detectormapafter->SetXTitle("#eta");
   // detectormapafter->SetYTitle("#phi");
-  
+
   max_towerjet_energy = new TH1D("max_towerjet_energy",
 				 "Maximum towerjet energy for each event",
 				 NBINS,0,MAX_EN);
-  
+
   // max_towerjet_location = new TH2I("max_towerjet_location",
   // 				   "Location of max towerjet for each event",
   // 				   NETA_TOWERS,0,NETA_TOWERS,NPHI_TOWERS,0,NPHI_TOWERS);
-  
+
 
   int evts = 0;
   bool break_early = total_events != -1;
-  
+
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
 
@@ -81,12 +82,12 @@ TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
     if(break_early && (evts > total_events)) break;
 
     fChain->GetEntry(jentry);
-    
+
     double fullDetectorTowers[NETA_TOWERS][NPHI_TOWERS]; //[eta][phi]
     for(int i = 0; i < NETA_TOWERS; i++)
       for(int j = 0; j < NPHI_TOWERS; j++)
 	fullDetectorTowers[i][j]=0;
-    
+
 
     //------Fills in the phi-eta matrix for total Et values using eta and phi indexes------
     //Stolen from Doga
@@ -140,15 +141,22 @@ TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
 
     if(PHI_AVERAGE)
     {
+      //int etawidth = 1; // 1->strip of width 3
       double phiAverageTowers[NETA_TOWERS];
       for(int ieta = 0; ieta < NETA_TOWERS; ieta++){
 	phiAverageTowers[ieta] = 0;
-	for(int iphi = 0; iphi < NPHI_TOWERS; iphi++){
-	  phiAverageTowers[ieta] += fullDetectorTowers[ieta][iphi];
+	int strips = 0;
+	for(int ieta2 = ieta-etawidth; ieta2 <= ieta+etawidth; ieta2++)
+	{
+	  if (ieta2<0) continue;
+	  for(int iphi = 0; iphi < NPHI_TOWERS; iphi++){
+	    phiAverageTowers[ieta] += fullDetectorTowers[ieta2][iphi];
+	  }
+	  strips++;
 	}
-	phiAverageTowers[ieta] /= NPHI_TOWERS;
+	phiAverageTowers[ieta] /= (NPHI_TOWERS*strips);
       }
-      
+
       for(int ieta = 0; ieta < NETA_TOWERS; ieta++)
 	for(int iphi = 0; iphi < NPHI_TOWERS; iphi++){
 	  fullDetectorTowers[ieta][iphi] -= phiAverageTowers[ieta];
@@ -162,17 +170,17 @@ TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
 
       // TCanvas *c4 = new TCanvas();
       // detectormapafter->Draw("Lego2");
-    }    
+    }
 
     TowerJet *highestJet = findTowerJet(fullDetectorTowers, CIRCULAR_JETS, JET_DIAMETER);
-    
+
     if(highestJet[0].sumEt > threshhold)
     {
       max_towerjet_energy->Fill(highestJet[0].sumEt);
       // max_towerjet_location->Fill(highestJet.eta_center, highestJet.phi_center);
     }
   }
-  
+
   efficiency_curve = new TH1D("efficiency_curve","Fraction of passing events versus threshold",
 			      NBINS,0,MAX_EN);
   double total_integral = max_towerjet_energy->Integral();
@@ -181,7 +189,7 @@ TH1D* TriggerPrimitivesTree_towerjet::Loop(int total_events,
   {
     double j = (double)i*(double)MAX_EN/(double)NBINS;
     double integral = max_towerjet_energy->Integral(i, NBINS);
-    efficiency_curve->Fill(j, (double)integral/total_integral);      
+    efficiency_curve->Fill(j, (double)integral/total_integral);
   }
 
   // TCanvas *c1 = new TCanvas();
